@@ -5,11 +5,11 @@
   "exports": "./src/router.ts",
   "scripts": {
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "tsx src/db/migrate.ts",
+    "db:migrate": "node src/db/migrate.ts",
     "typecheck": "tsc --noEmit",
-    "db:seed": "tsx src/db/seed.ts",
-    "dev": "tsx watch src/server.ts",
-    "start": "tsx src/server.ts",
+    "db:seed": "node src/db/seed.ts",
+    "dev": "node --watch src/server.ts",
+    "start": "node src/server.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -30,7 +30,6 @@
     "@types/node": "^24.19.2",
     "@types/pg": "^8.23.1",
     "drizzle-kit": "^0.31.11",
-    "tsx": "^4.23.15",
     "vitest": "^5.1.0"
   }
 }

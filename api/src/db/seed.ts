@@ -5,9 +5,29 @@ import { manufacturers, materials, plants } from './schema.ts';
 import { MANUFACTURERS, PLANTS } from './seed/catalogue.ts';
 import { generateMaterials } from './seed/generate.ts';
 
-// Usage: npm run db:seed            (10,000 materials)
-//        npm run db:seed -- 200000  (a larger set, used to measure search speed)
-const total = z.coerce.number().int().min(1).max(1_000_000).default(10_000).parse(process.argv[2]);
+// Usage: npm run db:seed                (10,000 materials)
+//        npm run db:seed -- 200000      (a larger set, used to measure search speed)
+//        npm run db:seed -- --if-empty  (do nothing if the table already has rows)
+const args = process.argv.slice(2);
+const total = z.coerce
+  .number()
+  .int()
+  .min(1)
+  .max(1_000_000)
+  .default(10_000)
+  .parse(args.find((arg) => !arg.startsWith('--')));
+
+// The hosted demo runs the seed on every start, because the free plan has no separate
+// release step. This flag makes that safe: it fills an empty database once and never
+// overwrites edits afterwards.
+if (args.includes('--if-empty')) {
+  const [row] = await db.select({ existing: count() }).from(materials);
+  if (row && row.existing > 0) {
+    console.log(`Seed skipped: the database already has ${row.existing} materials.`);
+    await pool.end();
+    process.exit(0);
+  }
+}
 
 // 1,000 rows of 12 values is far below Postgres's limit of 65,535 values per statement.
 const BATCH_SIZE = 1000;

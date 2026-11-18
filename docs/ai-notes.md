@@ -172,3 +172,24 @@ A running record of how Claude Code was used and what had to be corrected. The R
   exported the staged files to an empty folder with no `.env` and no `node_modules`,
   and ran every step in order against new, empty databases. All nine passed. That is
   also the closest check so far that the project works from a fresh clone.
+
+## Stage 9: deployment
+
+- **Docs before config.** The agent downloaded Render's current Blueprint reference
+  before writing `render.yaml`, and it changed the design twice: a pre-deploy command
+  needs a paid plan, so migrations run in the start command; and `autoDeployTrigger:
+checksPass` (which replaced an older field) makes Render wait for CI.
+- **A dependency removed.** The plan was to run the API in production with `tsx`. The
+  agent first tested whether Node 24 runs the TypeScript directly, which it does by
+  stripping the types. So `tsx` is gone from the project: development, tests'
+  database scripts and production all run on plain `node`, with no compile step.
+- **Safe to restart.** The start command migrates and seeds on every start. The seed
+  got an `--if-empty` flag so a restart never overwrites edits made on the demo.
+- **Rehearsed locally.** In an exported clean copy with `NODE_ENV=production`: installed
+  with `npm ci --omit=dev` (no build or test tools present), ran the exact start command
+  twice against a new empty database (first run seeded, second skipped), checked health,
+  data and the CORS header for the hosted web address, then built the web app and
+  confirmed the hosted API address is compiled into the bundle.
+- **Not verifiable from here.** Render itself: that its free Postgres allows the
+  `pg_trgm` extension, and the real service addresses. Those are checked on the live
+  site.
