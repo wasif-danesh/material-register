@@ -22,3 +22,18 @@ A running record of how Claude Code was used and what had to be corrected. The R
   is a no-op). Tried by hand: a negative price, a duplicate material number, an unknown
   material type, an unknown plant, and deleting a plant that is in use. All five were
   rejected by the database.
+
+## Stage 2: seed data
+
+- **Approach.** Faker alone gives unrealistic product names, so the data comes from a
+  hand-reviewed catalogue of 43 part families (`api/src/db/seed/catalogue.ts`). Faker
+  only makes the random choices, from a fixed seed. The agent drafted the families; the
+  manufacturers are real brands and the part numbers are invented.
+- **Stock spread (corrected).** The first run left 20% of materials with zero stock,
+  not the intended 15%, because the random stock range also started at zero. The check
+  query showed it; the non-empty range now starts at one.
+- **Check for this stage.** Seeded twice and compared a checksum of every row: the data
+  is identical on each run. Read sample rows, counted by status, type and plant, and
+  confirmed no raw material has a maker, no placeholder was left unfilled, and no row
+  was created after it was updated. The brief's own example (active SKF bearings at
+  Brisbane) returns 74 rows.

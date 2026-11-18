@@ -13,4 +13,5 @@ cp .env.example .env
 npm install
 npm run db:up
 npm run db:migrate
+npm run db:seed
 ```

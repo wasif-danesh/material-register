@@ -24,6 +24,8 @@ filters, sorting and pagination, all done in the database. The brief is summaris
 - `npm run db:up` - start Postgres and wait until it is healthy.
 - `npm run db:generate` - write a new migration after changing `api/src/db/schema.ts`.
 - `npm run db:migrate` - apply migrations.
+- `npm run db:seed` - replace all data with 10,000 materials (`-- 200000` for more).
+  The data is the same on every run.
 - `npm run lint`, `npm run typecheck`, `npm run format` - run all three before finishing.
 
 ## Rules

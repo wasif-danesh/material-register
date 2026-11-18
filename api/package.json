@@ -5,9 +5,11 @@
   "scripts": {
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx src/db/migrate.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "db:seed": "tsx src/db/seed.ts"
   },
   "dependencies": {
+    "@faker-js/faker": "^10.6.0",
     "@material-register/shared": "*",
     "drizzle-orm": "^0.45.4",
     "pg": "^8.23.1",
