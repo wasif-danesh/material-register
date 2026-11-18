@@ -88,9 +88,10 @@ fixed so that the setup needs no configuration.
 **Optional extras**
 
 The brief says to pick one at most. I did three, on purpose: I wanted to build the whole
-thing properly and I accepted going past the suggested time to do it. The core was
-finished and checked before any extra was started, and each extra is separate from the
-others.
+thing properly. It stayed inside the suggested time: the build took about two hours with
+a coding agent (the commit history shows it), after a planning discussion in which the
+stack, schema and page layout were settled. The core was finished and checked before any
+extra was started, and each extra is separate from the others.
 
 - **Detail view:** click a row to view and edit a material, with validation in the
   browser and again on the server.
