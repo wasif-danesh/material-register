@@ -42,6 +42,13 @@ await db.transaction(async (tx) => {
   }
 });
 
+// After a bulk load, the trigram indexes keep the new entries in an unsorted "pending
+// list", and the planner has no statistics for the new rows. Until autovacuum catches
+// up, searches fall back to reading every row. Doing it now means the database is in
+// its normal state as soon as the script ends. VACUUM cannot run inside a transaction,
+// which is why it is here and not above.
+await db.execute(sql`VACUUM ANALYZE ${materials}`);
+
 // Print a summary so a wrong spread is noticed straight away.
 const byStatus = await db
   .select({ status: materials.status, materials: count() })

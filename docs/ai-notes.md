@@ -135,3 +135,23 @@ A running record of how Claude Code was used and what had to be corrected. The R
   material, as the brief words it, while the material number stays a real link for
   keyboard and screen-reader use. A click on the link is ignored by the row handler, so
   it does not navigate twice.
+
+## Stage 7: trigram search
+
+- **Measured before changing anything.** The agent seeded 200,000 rows and timed the
+  two queries each search runs, 7 runs each, before adding any index. Full method and
+  numbers are in `docs/search-performance.md`.
+- **Extension as a custom migration.** Drizzle does not manage Postgres extensions.
+  The agent used `drizzle-kit generate --custom` for `CREATE EXTENSION pg_trgm`, so the
+  rule "never edit a generated migration by hand" still holds.
+- **Reported what did not improve.** Selective searches went from about 40 ms to under
+  2 ms. The agent also reported the cases that did not improve: a two-character search,
+  and one page query where the planner preferred a different index.
+- **A wrong claim, caught by checking (corrected).** The first draft of the write-up
+  said the unindexed search at 10,000 rows "takes about 2 ms". That number was a guess.
+  Measuring it gave 5.5 ms, and also showed the new indexes were not being used at all
+  straight after seeding. Cause: a GIN index holds bulk-loaded entries in a pending
+  list until `VACUUM` runs. The seed script now ends with `VACUUM ANALYZE`, and the
+  write-up explains the trap.
+- **Write cost measured, not assumed.** Inserting 20,000 rows took about twice as long
+  with the trigram indexes, measured inside transactions that were rolled back.

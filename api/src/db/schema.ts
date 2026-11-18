@@ -63,6 +63,21 @@ export const materials = pgTable(
     // Serves the default sort (newest first, id as the tie-break). A plain ascending
     // index is enough: Postgres reads it backwards for ORDER BY ... DESC, ... DESC.
     index('materials_updated_at_id_idx').on(table.updatedAt, table.id),
+    // Trigram indexes for the search box. The search is a "contains" match
+    // (ILIKE '%text%') on these three columns, which an ordinary index cannot serve
+    // because the text may start anywhere. A trigram index stores every three-character
+    // piece of each value, so Postgres can find the rows containing the pieces of the
+    // search text. The query itself is unchanged. Searches shorter than three
+    // characters cannot use them. Measured in docs/search-performance.md.
+    index('materials_material_number_trgm_idx').using(
+      'gin',
+      table.materialNumber.op('gin_trgm_ops'),
+    ),
+    index('materials_description_trgm_idx').using('gin', table.description.op('gin_trgm_ops')),
+    index('materials_manufacturer_part_number_trgm_idx').using(
+      'gin',
+      table.manufacturerPartNumber.op('gin_trgm_ops'),
+    ),
     // Last line of defence if a bug gets past the API validation.
     check('materials_unit_price_check', sql`${table.unitPrice} >= 0`),
     check('materials_quantity_on_hand_check', sql`${table.quantityOnHand} >= 0`),

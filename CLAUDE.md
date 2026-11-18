@@ -45,6 +45,10 @@ filters, sorting and pagination, all done in the database. The brief is summaris
 - The URL is the single source of truth for table state (search, filters, sort, page).
 - Fixed value sets (types, statuses, units) are defined once in `shared/src/index.ts`.
 - Never edit a generated migration by hand; change the schema and generate a new one.
+  For SQL that Drizzle cannot express (an extension, for example), create an empty
+  migration with `npx drizzle-kit generate --custom --name <name>` and write it there.
+- After a bulk load, run `VACUUM ANALYZE`; the seed script does. Until then the trigram
+  search indexes are not used (see `docs/search-performance.md`).
 - Styling uses Mantine theme tokens only. No hard-coded colours or pixel font sizes.
 - Comments explain why, not what. Comment non-obvious decisions (tie-breaks, escaping,
   allow-lists). Do not add a comment that repeats a function's name.
