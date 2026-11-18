@@ -85,3 +85,19 @@ A running record of how Claude Code was used and what had to be corrected. The R
   multi-select, which pushed it onto its own row. Fixed with a smaller minimum width.
   While checking that, the agent found that typing a name and pressing Enter selected
   nothing, and added `selectFirstOptionOnChange`.
+
+## Stage 5: tests
+
+- **What is tested.** The list query and its input validation, against a real Postgres:
+  the behaviour worth testing here is the SQL, so mocking the database would test
+  nothing. 33 tests run in under a second.
+- **Hand-written fixtures.** Tests use 12 rows written by hand (`api/test/fixtures.ts`),
+  not the 10,000 seeded ones, so each expected result can be checked by reading the file.
+- **Separate database with a guard.** Tests replace all data, so they use
+  `material_register_test`, created on first run. The setup refuses to run against any
+  database whose name does not end in `_test`. I confirmed the guard by pointing the
+  tests at the development database: they refused, and its 10,000 rows were untouched.
+- **Proving the tests can fail.** All 33 passed on the first run, which proves little.
+  The agent then broke the query five ways, one at a time: no tie-break, no wildcard
+  escaping, search skipping the part number, an inner join in place of the left join,
+  and a count that ignores the filters. Each was caught by between one and four tests.

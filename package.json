@@ -23,7 +23,8 @@
     "dev:api": "npm run dev -w api",
     "dev:web": "npm run dev -w web",
     "dev": "concurrently -n api,web \"npm:dev:api\" \"npm:dev:web\"",
-    "build": "npm run build -w web"
+    "build": "npm run build -w web",
+    "test": "npm run test -w api"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

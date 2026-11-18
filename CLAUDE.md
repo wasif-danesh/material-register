@@ -31,7 +31,10 @@ filters, sorting and pagination, all done in the database. The brief is summaris
   The data is the same on every run.
 - `npm run dev` - start the API (port 3001) and the web app (port 5173) together.
 - `npm run build` - production build of the web app.
-- `npm run lint`, `npm run typecheck`, `npm run format` - run all three before finishing.
+- `npm test` - API tests against the `material_register_test` database (created on
+  first run; needs `npm run db:up`). Fixtures are in `api/test/fixtures.ts`.
+- `npm run lint`, `npm run typecheck`, `npm run format` - run all three, and `npm test`,
+  before finishing.
 
 ## Rules
 
@@ -44,6 +47,7 @@ filters, sorting and pagination, all done in the database. The brief is summaris
 - Styling uses Mantine theme tokens only. No hard-coded colours or pixel font sizes.
 - Comments explain why, not what. Comment non-obvious decisions (tie-breaks, escaping,
   allow-lists). Do not add a comment that repeats a function's name.
+- A change to `listMaterials.ts` or the input schema needs a test in `api/test`.
 - Keep it simple. No new dependency without a reason that fits in one sentence.
 
 ## Adding a filter or a column
