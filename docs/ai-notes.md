@@ -193,3 +193,10 @@ checksPass` (which replaced an older field) makes Render wait for CI.
 - **Not verifiable from here.** Render itself: that its free Postgres allows the
   `pg_trgm` extension, and the real service addresses. Those are checked on the live
   site.
+- **Checked on the live site.** After I created the Blueprint on Render, the agent
+  checked the hosted API (10,000 rows, 74 for the brief's example, a 400 for bad input,
+  a 404 for a missing id, the CORS header and the security headers) and then the hosted
+  web app in a browser: a filtered link, a row click through to the edit form, and a
+  direct link to `/materials/42`, with no console errors. Both `pg_trgm` and the assumed
+  service addresses turned out fine. Saving an edit on the live site was not tried, to
+  avoid changing public data; only the CORS preflight for it was checked.
