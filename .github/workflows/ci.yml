@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A newer push to the same branch cancels the run still in progress for the older one.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+# The workflow only reads the repository; it needs no other access.
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    # The same Postgres image as docker-compose.yml, so CI and local runs match.
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: material_register
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d material_register"
+          --health-interval 2s
+          --health-timeout 3s
+          --health-retries 15
+
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/material_register
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      # Installs exactly what package-lock.json lists, and fails if it is out of date.
+      - run: npm ci
+
+      # Fails on a known high-severity issue in a package that runs in production.
+      # Build and lint tooling is left out: it never ships.
+      - run: npm audit --omit=dev --audit-level=high
+
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run typecheck
+
+      # Applies every migration to an empty database, which proves they work from
+      # scratch and in order. The seed then proves the schema accepts the real data.
+      - run: npm run db:migrate
+      - run: npm run db:seed
+
+      # The tests create and migrate their own database on the same server.
+      - run: npm test
+
+      - run: npm run build

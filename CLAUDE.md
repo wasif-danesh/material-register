@@ -37,6 +37,8 @@ filters, sorting and pagination, all done in the database. The brief is summaris
 - `npm run lint`, `npm run typecheck`, `npm run format` - run all three, and `npm test`,
   before finishing.
 
+CI (`.github/workflows/ci.yml`) runs these same commands on every push and pull request.
+
 ## Rules
 
 - Search, filtering, sorting and pagination happen in SQL. Never filter or sort rows

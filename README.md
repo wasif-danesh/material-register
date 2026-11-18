@@ -1,5 +1,7 @@
 # Material Register
 
+[![CI](https://github.com/wasif-danesh/material-register/actions/workflows/ci.yml/badge.svg)](https://github.com/wasif-danesh/material-register/actions/workflows/ci.yml)
+
 A web app for searching and filtering a catalogue of material records.
 
 > Work in progress. This README is completed in the last stage; see `docs/plan.md`.

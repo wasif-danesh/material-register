@@ -155,3 +155,20 @@ A running record of how Claude Code was used and what had to be corrected. The R
   write-up explains the trap.
 - **Write cost measured, not assumed.** Inserting 20,000 rows took about twice as long
   with the trigram indexes, measured inside transactions that were rolled back.
+
+## Stage 8: CI
+
+- **What runs.** One GitHub Actions job on every push and pull request: clean install,
+  audit of production dependencies, lint, format check, type-check, all migrations on
+  an empty database, the seed, the tests and the production build.
+- **Versions looked up, not remembered.** The agent checked the current releases of the
+  two GitHub actions through the GitHub API before writing them into the workflow.
+- **Audit scoped on purpose.** `npm audit` reports two issues, both inside build and
+  lint tooling (`esbuild` through `drizzle-kit`, `picomatch` through Vite and ESLint).
+  The production dependencies have none. CI fails only on a high-severity issue in a
+  package that runs in production; the forced fix npm suggests would make breaking
+  upgrades to tools that never ship.
+- **Rehearsed before pushing.** GitHub Actions cannot run locally here, so the agent
+  exported the staged files to an empty folder with no `.env` and no `node_modules`,
+  and ran every step in order against new, empty databases. All nine passed. That is
+  also the closest check so far that the project works from a fresh clone.
