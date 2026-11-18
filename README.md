@@ -97,7 +97,8 @@ others.
 - **Tests:** 47 tests for the list query, the update and the input validation.
 - **Faster search:** trigram indexes, with before and after measurements.
 
-I did not build the natural-language filter.
+I did not build the natural-language filter; [What I'd do next](#what-id-do-next)
+describes how I would.
 
 ![The edit page for one material](docs/screenshots/detail.png)
 
@@ -352,9 +353,18 @@ have worked with: S3, CloudFront, ECS Fargate and RDS.
 
 ## What I'd do next
 
-- **Natural-language filters.** Turn "obsolete bearings in Brisbane" into the same
-  filter input with an LLM, and validate its answer with the existing Zod schema before
-  using it.
+- **Natural-language filters.** Not built; this is how I would add it with OpenRouter.
+  A new API procedure would send the user's phrase ("obsolete bearings in Brisbane") to
+  a free model on OpenRouter, together with the allowed values: the types, statuses,
+  plant names and manufacturer names. The model is asked to return JSON in the shape of
+  the existing list input, and nothing else. The API treats that reply as untrusted
+  input and validates it with the same Zod schema a normal request goes through, so the
+  model can never produce a filter the app does not support, and it never touches the
+  database or writes SQL. The web app then writes the result into the URL, which fills
+  in the normal search box and filters, so the user can see and correct what the model
+  chose. The key and model name would be environment variables on the API only, the
+  endpoint would be rate-limited, and the feature would switch itself off when no key
+  is set, so the app works the same without it.
 - **Login and roles.** Editing is open to anyone today.
 - **Two people editing one material.** The later save silently wins. I'd send the
   "last updated" time with the edit and reject it if the material changed in between.
