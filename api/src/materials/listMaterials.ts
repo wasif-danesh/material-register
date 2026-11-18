@@ -3,6 +3,7 @@ import { and, asc, count, desc, eq, ilike, inArray, or, type SQL } from 'drizzle
 import type { PgColumn } from 'drizzle-orm/pg-core';
 import { db } from '../db/client.ts';
 import { manufacturers, materials, plants } from '../db/schema.ts';
+import { MATERIAL_FIELDS } from './materialFields.ts';
 
 // Maps each allowed sort name to its column. Validation has already limited `sortBy`
 // to these names, so user input never chooses a column directly.
@@ -57,20 +58,7 @@ export async function listMaterials(input: ListMaterialsInput) {
 
   const [items, totals] = await Promise.all([
     db
-      .select({
-        id: materials.id,
-        materialNumber: materials.materialNumber,
-        description: materials.description,
-        materialType: materials.materialType,
-        status: materials.status,
-        manufacturerPartNumber: materials.manufacturerPartNumber,
-        unitOfMeasure: materials.unitOfMeasure,
-        unitPrice: materials.unitPrice,
-        quantityOnHand: materials.quantityOnHand,
-        updatedAt: materials.updatedAt,
-        plant: { id: plants.id, code: plants.code, name: plants.name },
-        manufacturer: { id: manufacturers.id, name: manufacturers.name },
-      })
+      .select(MATERIAL_FIELDS)
       .from(materials)
       .innerJoin(plants, eq(materials.plantId, plants.id))
       // Left join: raw materials have no manufacturer and must still be listed.

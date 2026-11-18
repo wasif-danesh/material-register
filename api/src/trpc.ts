@@ -22,7 +22,9 @@ const t = initTRPC.create({
       data: {
         ...shape.data,
         // Per-field messages, so a form can show each one beside its input.
-        fieldErrors: validationError ? z.flattenError(validationError).fieldErrors : null,
+        fieldErrors: validationError
+          ? (z.flattenError(validationError).fieldErrors as Record<string, string[] | undefined>)
+          : null,
       },
     };
   },

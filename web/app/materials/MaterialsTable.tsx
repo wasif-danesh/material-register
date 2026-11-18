@@ -1,6 +1,7 @@
-import { Badge, Group, Skeleton, Table, Text, UnstyledButton } from '@mantine/core';
+import { Anchor, Badge, Group, Skeleton, Table, Text, UnstyledButton } from '@mantine/core';
 import type { SortDirection, SortField } from '@material-register/shared';
 import { IconChevronDown, IconChevronUp, IconSelector } from '@tabler/icons-react';
+import { Link, useLocation } from 'react-router';
 import { STATUS_COLORS } from '../theme.ts';
 import type { MaterialRow } from '../trpc.ts';
 import { formatDate, formatPrice } from './format.ts';
@@ -66,13 +67,27 @@ function HeaderRow({ sortBy, sortDir, onSort }: HeaderProps) {
   );
 }
 
+/** Passed along with the link to a material, and read by the detail page. */
+export type MaterialLinkState = { listSearch: string };
+
 function MaterialRowCells({ material }: { material: MaterialRow }) {
+  // The list's query string, for example "?q=bearing&page=2".
+  const listSearch = useLocation().search;
+
   return (
     <Table.Tr>
       <Table.Td>
-        <Text ff="monospace" fz="sm">
+        {/* A real link, so it works with the keyboard and "open in new tab". The list's
+            current URL travels with it, so the detail page can link back to this view. */}
+        <Anchor
+          component={Link}
+          to={`/materials/${material.id}`}
+          state={{ listSearch } satisfies MaterialLinkState}
+          ff="monospace"
+          fz="sm"
+        >
           {material.materialNumber}
-        </Text>
+        </Anchor>
       </Table.Td>
       <Table.Td>{material.description}</Table.Td>
       <Table.Td>{material.materialType}</Table.Td>

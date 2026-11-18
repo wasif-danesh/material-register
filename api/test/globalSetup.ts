@@ -1,9 +1,7 @@
-import { sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import { Client, Pool } from 'pg';
-import { manufacturers, materials, plants } from '../src/db/schema.ts';
-import { MANUFACTURERS, MATERIALS, PLANTS } from './fixtures.ts';
+import { resetDatabase } from './resetDatabase.ts';
 import { TEST_DATABASE_URL } from './testDatabase.ts';
 
 /** Runs once before all test files. */
@@ -38,10 +36,7 @@ export default async function setup() {
   // The same migrations the application uses, so the tests run against the real schema.
   await migrate(db, { migrationsFolder: new URL('../drizzle', import.meta.url).pathname });
 
-  await db.execute(sql`TRUNCATE ${materials}, ${plants}, ${manufacturers} RESTART IDENTITY`);
-  await db.insert(plants).values(PLANTS);
-  await db.insert(manufacturers).values(MANUFACTURERS);
-  await db.insert(materials).values(MATERIALS);
+  await resetDatabase(db);
 
   await pool.end();
 }

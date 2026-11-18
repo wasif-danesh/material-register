@@ -101,3 +101,30 @@ A running record of how Claude Code was used and what had to be corrected. The R
   The agent then broke the query five ways, one at a time: no tie-break, no wildcard
   escaping, search skipping the part number, an inner join in place of the left join,
   and a count that ignores the filters. Each was caught by between one and four tests.
+
+## Stage 6: detail and edit view
+
+- **One schema for the form and the API.** `materialFieldsSchema` in `shared` validates
+  the edit form in the browser and the same request on the server, so both give the
+  same messages. Mantine 9 accepts a Zod schema directly (`schemaResolver`), which the
+  agent learned from the migration guide; its training data had the older, removed API.
+- **Money stays a string.** The price field is a text box validated by a pattern, not a
+  number box, so the value never passes through a floating-point number.
+- **Test bug (corrected).** Seven new tests failed on the first run. The code was right;
+  the agent's test compared the stored material against the form input, which has a
+  different shape. The tests now compare the material before and after a rejected save.
+- **Tests that write need isolation.** The update tests change rows that the list tests
+  rely on. Test files now run one after another, and the update tests reload the
+  fixtures after each test.
+- **Development-only glitch.** Adding `@mantine/form` while the dev server was running
+  made Vite rebuild its dependency cache mid-session and load a second copy of React,
+  which broke the page once. A restart from a cleared cache showed no reload and no
+  console errors, so someone following the README will not see it.
+- **Check for this stage.** 14 new API tests (47 in total). In the browser: opened a
+  material from page 2 of a filtered list; submitted an empty description and a price
+  with three decimals and saw both messages; saved a valid edit and saw the trimmed
+  text, the price as 705.50 and a new "last updated" date; saw the edited row at the top
+  of the list; followed "Back to materials" to the same filtered page; and opened a
+  missing id and a non-numeric id, which both show "Material not found".
+- **Not checked.** A field the browser accepts but the server rejects, shown beside the
+  field. The code path exists, but the shared schema makes it hard to trigger by hand.

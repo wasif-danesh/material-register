@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { MATERIAL_STATUSES, MATERIAL_TYPES } from './constants.ts';
+import { MATERIAL_STATUSES, MATERIAL_TYPES, UNITS_OF_MEASURE } from './constants.ts';
 
 // These schemas are the contract between the web app and the API. The API validates
 // every request with them, and the web app uses the same ones to read the URL, so the
@@ -38,3 +38,48 @@ export const listMaterialsInputSchema = z.object({
 
 /** The input after validation, with every default filled in. */
 export type ListMaterialsInput = z.infer<typeof listMaterialsInputSchema>;
+
+export const materialIdSchema = z.object({ id: z.number().int().positive() });
+
+/**
+ * The editable fields of a material. The edit form validates with this schema in the
+ * browser and the API validates with it again, so both give the same messages. The
+ * material number is not here: it identifies the material and cannot be changed.
+ */
+export const materialFieldsSchema = z.object({
+  description: z
+    .string()
+    .trim()
+    .min(1, 'Enter a description')
+    .max(200, 'Use 200 characters or fewer'),
+  materialType: z.enum(MATERIAL_TYPES, 'Choose a type'),
+  status: z.enum(MATERIAL_STATUSES, 'Choose a status'),
+  plantId: z.number('Choose a plant').int().positive(),
+  manufacturerId: z.number().int().positive().nullable(),
+  // An empty box means "no part number" and is stored as null, not as an empty string.
+  manufacturerPartNumber: z
+    .string()
+    .trim()
+    .max(60, 'Use 60 characters or fewer')
+    .nullable()
+    .transform((value) => value || null),
+  unitOfMeasure: z.enum(UNITS_OF_MEASURE, 'Choose a unit'),
+  // Money stays a decimal string from the form to the database and is never a float.
+  // The pattern matches the column: up to 10 digits, then at most 2 decimal places.
+  unitPrice: z
+    .string()
+    .trim()
+    .regex(/^\d{1,10}(\.\d{1,2})?$/, 'Enter a price such as 12.50'),
+  quantityOnHand: z
+    .number('Enter a whole number')
+    .int('Enter a whole number')
+    .min(0, 'Enter zero or more')
+    // The largest value the integer column can hold.
+    .max(2_147_483_647, 'That number is too large'),
+});
+
+/** What the form holds while editing (before trimming and the empty-to-null change). */
+export type MaterialFormValues = z.input<typeof materialFieldsSchema>;
+
+export const updateMaterialInputSchema = materialFieldsSchema.extend(materialIdSchema.shape);
+export type UpdateMaterialInput = z.infer<typeof updateMaterialInputSchema>;

@@ -8,6 +8,9 @@ export default defineConfig({
     globalSetup: './test/globalSetup.ts',
     // Closes each test file's connection pool so the run can finish.
     setupFiles: './test/closePool.ts',
+    // All test files share one database and some of them write to it, so the files
+    // run one after another, not side by side.
+    fileParallelism: false,
     // The application reads DATABASE_URL. Setting it here, before any application code
     // loads, is what sends every query in a test to the test database.
     env: { DATABASE_URL: TEST_DATABASE_URL },

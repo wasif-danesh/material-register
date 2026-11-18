@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@mantine/core": "^9.8.1",
+    "@mantine/form": "^9.8.1",
     "@mantine/hooks": "^9.8.1",
     "@material-register/shared": "*",
     "@react-router/node": "^7.18.5",

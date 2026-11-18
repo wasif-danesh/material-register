@@ -33,6 +33,7 @@ export function Layout({ children }: { children: ReactNode }) {
         {/* Sets the colour scheme before the first paint, so there is no flash of
             the light theme for someone who uses dark. */}
         <ColorSchemeScript defaultColorScheme="auto" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <Meta />
         <Links />
       </head>

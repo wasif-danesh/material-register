@@ -11,3 +11,4 @@ export const { TRPCProvider, useTRPC } = createTRPCContext<AppRouter>();
 type Outputs = inferRouterOutputs<AppRouter>;
 export type MaterialRow = Outputs['materials']['list']['items'][number];
 export type FilterOptions = Outputs['meta']['options'];
+export type Material = Outputs['materials']['byId'];

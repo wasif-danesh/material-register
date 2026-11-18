@@ -18,9 +18,10 @@ filters, sorting and pagination, all done in the database. The brief is summaris
 - `shared/` - value lists and Zod schemas used by both sides. No server-only code.
 - `api/` - Express, tRPC routers, Drizzle schema and migrations (`api/drizzle`).
   Procedures in `router.ts` stay thin; query logic goes in `api/src/materials`.
-- `web/` - the React Router app. `app/routes/materials.tsx` is the page;
-  `app/materials/` holds its parts; `app/materials/tableState.ts` maps the URL to the
-  API input; `app/theme.ts` is the only place for colours and fonts.
+- `web/` - the React Router app. `app/routes/materials.tsx` is the list page and
+  `app/routes/material.tsx` the detail and edit page; `app/materials/` holds their
+  parts; `app/materials/tableState.ts` maps the URL to the API input; `app/theme.ts`
+  is the only place for colours and fonts.
 
 ## Commands
 
@@ -59,11 +60,16 @@ A filter touches four places, in this order:
 3. `web/app/materials/tableState.ts` - read and write its URL parameter.
 4. `web/app/materials/Filters.tsx` - add the control.
 
-A column touches two: the `select` in `listMaterials.ts` (if the field is not returned
-yet) and `COLUMNS` plus the row cells in `web/app/materials/MaterialsTable.tsx`. To make
+A column touches two: `MATERIAL_FIELDS` in `api/src/materials/materialFields.ts` (if the
+field is not returned yet) and `COLUMNS` plus the row cells in
+`web/app/materials/MaterialsTable.tsx`. To make
 it sortable, also add it to `SORT_FIELDS` and `SORT_COLUMNS`.
 
 Check Mantine 9 usage against https://mantine.dev/llms.txt, not from memory.
+
+An editable field touches three: `materialFieldsSchema` in `shared/src/schemas.ts`,
+`toFormValues` and the inputs in `web/app/materials/MaterialForm.tsx`, and a test in
+`api/test/updateMaterial.test.ts`.
 
 ## Way of working
 
