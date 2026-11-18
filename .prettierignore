@@ -1,0 +1,6 @@
+node_modules
+dist
+build
+.react-router
+api/drizzle
+package-lock.json
