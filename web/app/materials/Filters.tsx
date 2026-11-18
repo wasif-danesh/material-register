@@ -1,4 +1,4 @@
-import { MultiSelect, SimpleGrid } from '@mantine/core';
+import { MultiSelect, rem, SimpleGrid } from '@mantine/core';
 import {
   MATERIAL_STATUSES,
   MATERIAL_TYPES,
@@ -7,6 +7,14 @@ import {
 } from '@material-register/shared';
 import type { FilterOptions } from '../trpc.ts';
 import type { TableState } from './tableState.ts';
+
+// A searchable multi-select keeps a text field after its pills. Mantine reserves 100px
+// for it, so once the pills fill most of a row the field drops to a new, empty-looking
+// line and the control grows taller than its neighbours. A smaller minimum lets the
+// field share the last row of pills; it still stretches to fill whatever space is left.
+// The searchable filters also set selectFirstOptionOnChange, so typing part of a name and
+// pressing Enter picks the first match without needing the arrow keys.
+const SEARCH_FIELD_STYLES = { inputField: { minWidth: rem(32) } };
 
 type FiltersProps = {
   state: TableState;
@@ -59,6 +67,8 @@ export function Filters({ state, options, optionsFailed, onChange }: FiltersProp
         disabled={!options}
         error={optionsError}
         searchable
+        selectFirstOptionOnChange
+        styles={SEARCH_FIELD_STYLES}
         clearable
       />
       <MultiSelect
@@ -70,6 +80,8 @@ export function Filters({ state, options, optionsFailed, onChange }: FiltersProp
         disabled={!options}
         error={optionsError}
         searchable
+        selectFirstOptionOnChange
+        styles={SEARCH_FIELD_STYLES}
         clearable
         nothingFoundMessage="No manufacturer found"
       />

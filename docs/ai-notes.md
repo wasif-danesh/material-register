@@ -79,3 +79,9 @@ A running record of how Claude Code was used and what had to be corrected. The R
   database for the error state and recovered with Retry; switched to the light theme;
   and checked a 375-pixel-wide screen, where only the table scrolls sideways. The
   production build succeeds and contains no server code.
+- **Filter height (reported by me).** With several values picked, the Plant and
+  Manufacturer filters grew an empty extra line, so the four filters no longer lined
+  up. Cause: Mantine reserves 100px for the search field inside a searchable
+  multi-select, which pushed it onto its own row. Fixed with a smaller minimum width.
+  While checking that, the agent found that typing a name and pressing Enter selected
+  nothing, and added `selectFirstOptionOnChange`.
