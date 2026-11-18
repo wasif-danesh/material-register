@@ -12,6 +12,8 @@ filters, sorting and pagination, all done in the database. The brief is summaris
 - API: Node and TypeScript, tRPC on Express (our choice), Zod for validation.
 - Database: PostgreSQL in Docker Compose, Drizzle ORM for schema, migrations and queries.
 - TypeScript 6, because `typescript-eslint` does not support 7 yet.
+- Vite 7, not 8: React Router 7 passes an option that Vite 8 deprecates, which prints
+  warnings on every start. Move to Vite 8 together with React Router 8.
 - Node 24 runs the API's TypeScript directly (it strips the types), so there is no
   compile step. That only works with erasable syntax: no `enum`, no constructor
   parameter properties, `import type` for types, and `.ts` in relative imports.

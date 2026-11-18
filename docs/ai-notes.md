@@ -217,3 +217,11 @@ checksPass` (which replaced an older field) makes Render wait for CI.
   in the first minute. The packages are now listed for Vite to prepare at start-up, and
   a `favicon.ico` was added. A second clean start showed neither.
 - **Screenshots** were taken with headless Chrome from the running app, not mocked.
+- **Noisy start-up (reported by me).** When I tested the setup myself, `npm run dev`
+  printed about twenty lines of yellow warnings. Two causes, both fixed at the source
+  and not hidden: React Router 7 warns about every v8 behaviour that has not been
+  decided on, so each flag is now explicitly off; and Vite 8 deprecates an option that
+  React Router 7 still passes internally, so the web app moved to Vite 7, the version
+  React Router 7 is built for. Start-up now prints two lines. The agent had seen these
+  warnings in stage 4 and called them harmless, which was true but missed that an
+  assessor sees them first.
