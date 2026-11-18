@@ -17,6 +17,7 @@ filters, sorting and pagination, all done in the database. The brief is summaris
 
 - `shared/` - value lists and Zod schemas used by both sides. No server-only code.
 - `api/` - Express, tRPC routers, Drizzle schema and migrations (`api/drizzle`).
+  Procedures in `router.ts` stay thin; query logic goes in `api/src/materials`.
 - `web/` - the React Router app (added in stage 4).
 
 ## Commands
@@ -26,6 +27,7 @@ filters, sorting and pagination, all done in the database. The brief is summaris
 - `npm run db:migrate` - apply migrations.
 - `npm run db:seed` - replace all data with 10,000 materials (`-- 200000` for more).
   The data is the same on every run.
+- `npm run dev:api` - start the API on port 3001 with reload on change.
 - `npm run lint`, `npm run typecheck`, `npm run format` - run all three before finishing.
 
 ## Rules

@@ -18,7 +18,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "npm run typecheck --workspaces --if-present",
-    "db:seed": "npm run db:seed -w api --"
+    "db:seed": "npm run db:seed -w api --",
+    "dev:api": "npm run dev -w api"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

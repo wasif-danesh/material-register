@@ -37,3 +37,22 @@ A running record of how Claude Code was used and what had to be corrected. The R
   confirmed no raw material has a maker, no placeholder was left unfilled, and no row
   was created after it was updated. The brief's own example (active SKF bearings at
   Brisbane) returns 74 rows.
+
+## Stage 3: API
+
+- **Structure.** The tRPC procedures only validate and delegate. The query logic is in
+  plain functions (`api/src/materials`), so tests can call it without HTTP.
+- **Process crash on database restart (found by testing).** Stopping the database while
+  the API was running is a check the agent ran on purpose. The `pg` pool throws an
+  uncaught exception when an idle connection dies unless it has an error listener, so
+  one was added in `api/src/db/client.ts`. With it, the API answered 503 on `/health`
+  and a generic 500 on the list, then recovered by itself when the database came back.
+- **Log path (corrected).** The request log printed `/materials.list` without the
+  `/trpc` prefix, because Express shortens `req.path` inside a mounted router. Changed
+  to `req.originalUrl`.
+- **Check for this stage.** A script made about 50 real HTTP calls: search on each of
+  the three columns in mixed case; `%` and `_` treated as plain text; each filter alone
+  and combined; every sort column in both directions, paging through all 10,000 rows to
+  prove each row appears exactly once and in order; a page past the end; and seven kinds
+  of bad input, each rejected with a 400 and a per-field message. The brief's example
+  returned the same 74 rows as the SQL written by hand in stage 2.
