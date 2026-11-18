@@ -2,6 +2,7 @@
   "name": "@material-register/api",
   "private": true,
   "type": "module",
+  "exports": "./src/router.ts",
   "scripts": {
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx src/db/migrate.ts",

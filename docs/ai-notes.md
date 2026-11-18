@@ -56,3 +56,26 @@ A running record of how Claude Code was used and what had to be corrected. The R
   prove each row appears exactly once and in order; a page past the end; and seven kinds
   of bad input, each rejected with a 400 and a per-field message. The brief's example
   returned the same 74 rows as the SQL written by hand in stage 2.
+
+## Stage 4: front end
+
+- **Docs before code.** Mantine 9 is newer than the agent's training data, so it read
+  Mantine's own React Router guide and the 8-to-9 migration guide (from the `llms.txt`
+  index Mantine publishes for coding agents) before writing components.
+- **One schema, both sides.** The web app reads the URL with the same Zod schema the
+  API validates with (`web/app/materials/tableState.ts`), so the URL parameters and the
+  API input cannot drift apart.
+- **Retry button (corrected).** In the error state, Retry reloaded the table but left
+  the plant and manufacturer dropdowns stuck on "Couldn't load the choices". Found by
+  stopping the database with the page open. Retry now reloads both.
+- **A simplification I accepted.** The plan said to bundle one interface font. The app
+  uses the operating system's own font instead: nothing to download and one fewer
+  dependency.
+- **Check for this stage, in a real browser.** Typed a search and confirmed no request
+  until Enter; picked each of the four filters; the brief's example again gave 74 rows;
+  sorted a column both ways; changed page and page size; confirmed sorting returns to
+  page 1; opened a full link in a fresh load; cleared; used the back button; opened an
+  empty result, a page past the end, and a link with invalid parameters; stopped the
+  database for the error state and recovered with Retry; switched to the light theme;
+  and checked a 375-pixel-wide screen, where only the table scrolls sideways. The
+  production build succeeds and contains no server code.

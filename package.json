@@ -7,7 +7,8 @@
   },
   "workspaces": [
     "shared",
-    "api"
+    "api",
+    "web"
   ],
   "scripts": {
     "db:up": "docker compose up -d --wait",
@@ -19,12 +20,17 @@
     "format:check": "prettier --check .",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "db:seed": "npm run db:seed -w api --",
-    "dev:api": "npm run dev -w api"
+    "dev:api": "npm run dev -w api",
+    "dev:web": "npm run dev -w web",
+    "dev": "concurrently -n api,web \"npm:dev:api\" \"npm:dev:web\"",
+    "build": "npm run build -w web"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "concurrently": "^10.0.7",
     "eslint": "^10.15.0",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react-hooks": "^7.1.1",
     "prettier": "^3.10.1",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.73.0"

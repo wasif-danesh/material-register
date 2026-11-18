@@ -14,7 +14,7 @@ npm install
 npm run db:up
 npm run db:migrate
 npm run db:seed
-npm run dev:api
+npm run dev
 ```
 
-The API then answers on http://localhost:3001, for example `/health`.
+Then open http://localhost:5173. The API runs on http://localhost:3001.

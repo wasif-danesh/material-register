@@ -18,7 +18,9 @@ filters, sorting and pagination, all done in the database. The brief is summaris
 - `shared/` - value lists and Zod schemas used by both sides. No server-only code.
 - `api/` - Express, tRPC routers, Drizzle schema and migrations (`api/drizzle`).
   Procedures in `router.ts` stay thin; query logic goes in `api/src/materials`.
-- `web/` - the React Router app (added in stage 4).
+- `web/` - the React Router app. `app/routes/materials.tsx` is the page;
+  `app/materials/` holds its parts; `app/materials/tableState.ts` maps the URL to the
+  API input; `app/theme.ts` is the only place for colours and fonts.
 
 ## Commands
 
@@ -27,7 +29,8 @@ filters, sorting and pagination, all done in the database. The brief is summaris
 - `npm run db:migrate` - apply migrations.
 - `npm run db:seed` - replace all data with 10,000 materials (`-- 200000` for more).
   The data is the same on every run.
-- `npm run dev:api` - start the API on port 3001 with reload on change.
+- `npm run dev` - start the API (port 3001) and the web app (port 5173) together.
+- `npm run build` - production build of the web app.
 - `npm run lint`, `npm run typecheck`, `npm run format` - run all three before finishing.
 
 ## Rules
@@ -42,6 +45,21 @@ filters, sorting and pagination, all done in the database. The brief is summaris
 - Comments explain why, not what. Comment non-obvious decisions (tie-breaks, escaping,
   allow-lists). Do not add a comment that repeats a function's name.
 - Keep it simple. No new dependency without a reason that fits in one sentence.
+
+## Adding a filter or a column
+
+A filter touches four places, in this order:
+
+1. `shared/src/schemas.ts` - add the field to `listMaterialsInputSchema`.
+2. `api/src/materials/listMaterials.ts` - add its condition in `buildWhere`.
+3. `web/app/materials/tableState.ts` - read and write its URL parameter.
+4. `web/app/materials/Filters.tsx` - add the control.
+
+A column touches two: the `select` in `listMaterials.ts` (if the field is not returned
+yet) and `COLUMNS` plus the row cells in `web/app/materials/MaterialsTable.tsx`. To make
+it sortable, also add it to `SORT_FIELDS` and `SORT_COLUMNS`.
+
+Check Mantine 9 usage against https://mantine.dev/llms.txt, not from memory.
 
 ## Way of working
 
