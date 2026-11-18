@@ -14,7 +14,13 @@ import type { TableState } from './tableState.ts';
 // field share the last row of pills; it still stretches to fill whatever space is left.
 // The searchable filters also set selectFirstOptionOnChange, so typing part of a name and
 // pressing Enter picks the first match without needing the arrow keys.
-const SEARCH_FIELD_STYLES = { inputField: { minWidth: rem(32) } };
+//
+// Mantine shows the text cursor on a searchable select because it can be typed in.
+// Here all four filters show the hand, so they look and behave as one set of dropdowns.
+const SEARCH_FIELD_STYLES = {
+  input: { cursor: 'pointer' },
+  inputField: { minWidth: rem(32), cursor: 'pointer' },
+};
 
 type FiltersProps = {
   state: TableState;

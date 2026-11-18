@@ -1,7 +1,7 @@
 import { Anchor, Badge, Group, Skeleton, Table, Text, UnstyledButton } from '@mantine/core';
 import type { SortDirection, SortField } from '@material-register/shared';
 import { IconChevronDown, IconChevronUp, IconSelector } from '@tabler/icons-react';
-import { Link, useLocation } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import { STATUS_COLORS } from '../theme.ts';
 import type { MaterialRow } from '../trpc.ts';
 import { formatDate, formatPrice } from './format.ts';
@@ -71,21 +71,30 @@ function HeaderRow({ sortBy, sortDir, onSort }: HeaderProps) {
 export type MaterialLinkState = { listSearch: string };
 
 function MaterialRowCells({ material }: { material: MaterialRow }) {
-  // The list's query string, for example "?q=bearing&page=2".
-  const listSearch = useLocation().search;
+  const navigate = useNavigate();
+  // The list's query string, for example "?q=bearing&page=2". It travels with the
+  // navigation, so the detail page can link back to this exact view.
+  const linkState: MaterialLinkState = { listSearch: useLocation().search };
+  const detailPath = `/materials/${material.id}`;
 
   return (
-    <Table.Tr>
+    // Clicking anywhere on the row opens the material, and the hand cursor says so.
+    <Table.Tr
+      style={{ cursor: 'pointer' }}
+      onClick={(event) => {
+        // The link below handles its own click; without this check a click on it
+        // would navigate twice. A click that ends a text selection is not a "go".
+        const clickedLink = (event.target as HTMLElement).closest('a');
+        const selectedText = window.getSelection()?.toString();
+        if (!clickedLink && !selectedText) {
+          void navigate(detailPath, { state: linkState });
+        }
+      }}
+    >
       <Table.Td>
-        {/* A real link, so it works with the keyboard and "open in new tab". The list's
-            current URL travels with it, so the detail page can link back to this view. */}
-        <Anchor
-          component={Link}
-          to={`/materials/${material.id}`}
-          state={{ listSearch } satisfies MaterialLinkState}
-          ff="monospace"
-          fz="sm"
-        >
+        {/* The row click is a mouse convenience. This link is the accessible way in:
+            it works with the keyboard, screen readers and "open in new tab". */}
+        <Anchor component={Link} to={detailPath} state={linkState} ff="monospace" fz="sm">
           {material.materialNumber}
         </Anchor>
       </Table.Td>

@@ -128,3 +128,10 @@ A running record of how Claude Code was used and what had to be corrected. The R
   missing id and a non-numeric id, which both show "Material not found".
 - **Not checked.** A field the browser accepts but the server rejects, shown beside the
   field. The code path exists, but the shared schema makes it hard to trigger by hand.
+- **Hand cursor and row click (requested by me).** I asked for the hand cursor wherever
+  something is clickable. The agent measured the cursor on every control instead of
+  guessing: buttons, links, sort headers and pagination already had it; dropdowns did
+  not, which one theme setting (`cursorType`) fixed. The whole table row now opens the
+  material, as the brief words it, while the material number stays a real link for
+  keyboard and screen-reader use. A click on the link is ignored by the row handler, so
+  it does not navigate twice.

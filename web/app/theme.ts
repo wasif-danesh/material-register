@@ -7,6 +7,9 @@ import type { MaterialStatus } from '@material-register/shared';
 export const theme = createTheme({
   primaryColor: 'indigo',
   defaultRadius: 'md',
+  // Show the hand cursor on dropdowns too. Mantine's default is the arrow for these;
+  // buttons and links already use the hand.
+  cursorType: 'pointer',
   // Mantine's default font is the operating system's own interface font: nothing to
   // download, and no request to an outside font server.
   fontFamilyMonospace: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',

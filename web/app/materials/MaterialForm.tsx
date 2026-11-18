@@ -33,6 +33,9 @@ function toFormValues(material: Material): MaterialFormValues {
   };
 }
 
+// Searchable selects show the text cursor by default; use the hand, like the others.
+const SEARCHABLE_SELECT_STYLES = { input: { cursor: 'pointer' } };
+
 type MaterialFormProps = {
   material: Material;
   /** Plants and manufacturers; undefined while they load. */
@@ -118,6 +121,7 @@ export function MaterialForm({ material, options }: MaterialFormProps) {
             disabled={!options}
             allowDeselect={false}
             searchable
+            styles={SEARCHABLE_SELECT_STYLES}
           />
           <Select
             label="Manufacturer"
@@ -130,6 +134,7 @@ export function MaterialForm({ material, options }: MaterialFormProps) {
             error={form.errors.manufacturerId}
             disabled={!options}
             searchable
+            styles={SEARCHABLE_SELECT_STYLES}
             clearable
           />
           <TextInput
