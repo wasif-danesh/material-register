@@ -200,3 +200,20 @@ checksPass` (which replaced an older field) makes Render wait for CI.
   direct link to `/materials/42`, with no console errors. Both `pg_trgm` and the assumed
   service addresses turned out fine. Saving an edit on the live site was not tried, to
   avoid changing public data; only the CORS preflight for it was checked.
+
+## Stage 10: README
+
+- **Written from the record.** The "How I used AI tools" section of the README was
+  drafted by the agent from this file. I read it against what actually happened before
+  committing it.
+- **Following the README from scratch.** The agent stopped the project's own database,
+  exported the files to an empty folder and ran the README's setup commands exactly as
+  written: a new database container, migrations, the seed and both servers. The brief's
+  example returned 74 rows, a row click opened the edit page, and all 47 tests passed.
+- **Two things only a fresh copy shows (corrected).** The dev server's log showed that
+  on the first page load after a clean install, Vite found the app's packages late,
+  rebuilt its cache and reloaded the browser once; and every page load logged an error
+  for a missing `favicon.ico`. Neither breaks anything, but an assessor would see both
+  in the first minute. The packages are now listed for Vite to prepare at start-up, and
+  a `favicon.ico` was added. A second clean start showed neither.
+- **Screenshots** were taken with headless Chrome from the running app, not mocked.

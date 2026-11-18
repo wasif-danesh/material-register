@@ -17,7 +17,8 @@ state lives in the URL. Loading, empty and error states are required.
 
 ## Stages
 
-Each stage ends with a real check and one commit.
+Each stage ends with a real check and one commit. All ten are complete; what happened
+in each, including what went wrong, is recorded in `docs/ai-notes.md`.
 
 | #   | Stage            | What is built                                                                                | How it is checked                                                   |
 | --- | ---------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
